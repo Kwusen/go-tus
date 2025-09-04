@@ -36,7 +36,7 @@ func DefaultConfig() *Config {
 // Validate validates the custom configuration.
 func (c *Config) Validate() error {
 	if c.ChunkSize < 1 {
-		return ErrChuckSize
+		return ErrChunkSize
 	}
 
 	if c.Resume && c.Store == nil {

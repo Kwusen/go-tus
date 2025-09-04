@@ -170,6 +170,16 @@ func (c *Client) CreateOrResumeUpload(u *Upload) (*Uploader, error) {
 	return nil, err
 }
 
+// ResponseErr is an error that contains the response headers and body.
+type ResponseErr struct {
+	Header http.Header
+	Body   []byte
+}
+
+func (c ResponseErr) Error() string {
+	return "response body received (201)"
+}
+
 func (c *Client) uploadChunck(url string, body io.Reader, size int64, offset int64) (int64, error) {
 	var method string
 
@@ -201,6 +211,9 @@ func (c *Client) uploadChunck(url string, body io.Reader, size int64, offset int
 	defer res.Body.Close()
 
 	switch res.StatusCode {
+	case 201:
+		body, _ := io.ReadAll(res.Body)
+		return -1, ResponseErr{res.Header, body}
 	case 204:
 		if newOffset, err := strconv.ParseInt(res.Header.Get("Upload-Offset"), 10, 64); err == nil {
 			return newOffset, nil
