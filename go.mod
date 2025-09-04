@@ -1,4 +1,4 @@
-module github.com/eventials/go-tus
+module github.com/Kwusen/go-tus
 
 go 1.13
 
